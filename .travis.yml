@@ -1,0 +1,29 @@
+language: python
+python:
+- '3.6'
+services:
+- docker
+env:
+- TORTUGA_BUILD_DOCKER="true"
+before_install:
+- docker pull puppet/puppet-agent
+install:
+- pip install tox
+- git clone https://github.com/UnivaCorporation/tortuga.git tortuga-base
+- cd tortuga-base/
+- pip install -r requirements.txt
+- paver build
+- cd ../
+- build-kit
+script:
+- echo "Done"
+deploy:
+  provider: releases
+  api_key:
+    secure: tjApU7vx8zHFuc2RYm/MmWZFe9D75wvFDm9Z+WQ3JGDlTHD2+BY+b8sSuZq41ITKc/oX4HWeGix1XdSzHZdqLlBkwhiYJjy4ZiZzF7RvTtS5Nxt/vY5Tg1RbdD86Pc15zh5l5IwgW0FGFII/RyE2HveYsmNW60v0NA7K/Zw6c+TX0TvXV7OB5m21xwKyxE+uD4k6LF3XTvhGS5uJuWrniWe4jN53yQk8Q5dNp0xD6bb9VActCltBH7ar9+x8z7YlNv5u5X8KWItF7B9qxUWI9EcOCJuL84KIaEgCghR6Y5t9JBgFRZfVgAQWbCE+jSk2+1qr4sJgHMhdMhgzD8Jjc5DzORS8MXK7dtlEzFmrq9iq2jumh2XFZYMcVfKu1EX3MMBisAXZBW1yBSwTM6ks1gd2Tb62ZDc6wXQzPahXKGye8xOyCvmiwWwYuzC2F6gpEAK+aBEZiy6fvOT86I594uRRjdoymoDAjR93y2zPeZ4q1UVrlF/q+mA4PyGRInGreoo2akygMU6wpmp54H64Vbc4CiVVQrkRKD8/wKB/j1ebkLnjOCU71xFiER5xWO6kiXr7tTqgtbynh8rxr7T0zB7dnIiHyyeieTJbfCnHsj6++TZSUgXZv4hlBUlVYURYAuggqVsUS9o5HFPdU5Zax6dRJUlrZF2Pt64l/WMDPtw=
+  file_glob: true
+  file: "dist/kit-clonezilla*.tar.bz2"
+  skip_cleanup: true
+  on:
+    all_branches: true
+    tags: true
